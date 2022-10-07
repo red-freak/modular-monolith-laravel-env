@@ -7,5 +7,11 @@ To store these files in source control without populating it's contents to tjhe 
 ## Systemrequirements
 This package is only tested with ```Laravel 9```. So it requires ```"vlucas/phpdotenv": "^5.4.1"```.
 
+## Installation
+
+## Testing
+
+## How to use
+
 ## Licence ##
-This package is free to use as stated by the LICENCE-file under ..., but you can [buy me a coffee](https://www.buymeacoffee.com/redFreak) if you want :D.
+This package is free to use as stated by the [LICENCE.md](LICENSE.md) under the MIT License, but you can [buy me a coffee](https://www.buymeacoffee.com/redFreak) if you want :D.
