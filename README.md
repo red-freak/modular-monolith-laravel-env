@@ -5,7 +5,8 @@ To store these files in source control without populating it's contents to tjhe 
 * This package is inspired by the [Laracon Online Winter '22 talk](https://youtu.be/0Rq-yHAwYjQ?t=4129) by [Ryuta Hamasaki](https://github.com/avosalmon): "Modularising the Monolith" ([slides](https://speakerdeck.com/avosalmon/modularising-the-monolith-laracon-online-winter-2022) | [github](https://github.com/avosalmon/modular-monolith-laravel)) and though of as an extension for such approaches.
 
 ## Systemrequirements
-This package is only tested with ```Laravel 9```. So it requires ```"vlucas/phpdotenv": "^5.4.1"```.
+* This package is only tested with `Laravel 9`. So it requires `"vlucas/phpdotenv": "^5.4.1"`.
+* The package is written in `PHP 8.1`.
 
 ## Installation
 

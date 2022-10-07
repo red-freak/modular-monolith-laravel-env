@@ -1,15 +1,37 @@
 {
   "name": "red-freak/modular-monolith-laravel-env",
-  "description": "description",
-  "minimum-stability": "stable",
-  "license": "proprietary",
+  "description": "dotenv management for modular monoliths inspired by https://github.com/avosalmon/modular-monolith-laravel",
+  "type": "library",
+  "license": "MIT",
   "authors": [
     {
       "name": "RedFreak_",
-      "email": "email@example.com"
+      "email": "SvenGeorge@gmx.de"
     }
   ],
   "require": {
     "vlucas/phpdotenv": "^5.4.1"
+  }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "orchestra/testbench": "7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "RedFreak\\ModularEnv\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "RedFreak\\ModularEnv\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "RedFreak\\ModularEnv\\ModularEnvServiceProvider"
+      ]
+    }
   }
 }

@@ -1,4 +1,5 @@
 /vendor
+composer.lock
 .env
 .env.backup
 .phpunit.result.cache
