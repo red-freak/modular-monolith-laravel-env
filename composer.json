@@ -1,0 +1,15 @@
+{
+  "name": "red-freak/modular-monolith-laravel-env",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "RedFreak_",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "vlucas/phpdotenv": "^5.4.1"
+  }
+}
