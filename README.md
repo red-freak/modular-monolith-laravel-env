@@ -69,8 +69,6 @@ The package assumes that the including package is structured following the modul
 If your structure is different you have to implement the `ModularEnvironmentApplication`-Contract into your application. By the method `ModularEnvironmentApplication::additionalEnvFiles()` the package will recognize different paths (* and ** are allowed and used like in the .gitignore).
 
 ## tasks
-### tasks for 0.1.0 - hooking the Kernel
-- [ ] implementing logic to hook into the Kernels
 ### tasks for 0.2.0 - reading the .env
 - [ ] implementing logic to load the additional dotenv-files
 ### tasks for 0.3.0 - encrypting the files
