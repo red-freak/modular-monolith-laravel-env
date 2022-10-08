@@ -8,7 +8,8 @@ use RedFreak\ModularEnv\Tests\TestCase;
 
 class LoadEnvironmentVariablesTest extends TestCase
 {
-    public function test_inheritance() {
+    public function test_inheritance(): void
+    {
         $bootstrapper = new RedFreakLoadEnvironmentVariables();
 
         $this->assertInstanceOf(IlluminateLoadEnvironmentVariables::class, $bootstrapper);

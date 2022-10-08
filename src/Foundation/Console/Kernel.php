@@ -3,16 +3,9 @@
 namespace RedFreak\ModularEnv\Foundation\Console;
 
 use Illuminate\Foundation\Console\Kernel as IlluminateConsoleKernel;
+use RedFreak\ModularEnv\Foundation\Concerns\ReplacesEnvironmentBootstrapper;
 
 class Kernel extends IlluminateConsoleKernel
 {
-    /**
-     * @inheritDoc
-     * We replace the {@link Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables LoadEnvironmentVariables}-Class
-     * in the default Laravel Bootstrappers to bootstrap our own dotenv-Bootstrapper.
-     */
-    protected function bootstrappers(): array
-    {
-        return parent::bootstrappers();
-    }
+    use ReplacesEnvironmentBootstrapper;
 }
