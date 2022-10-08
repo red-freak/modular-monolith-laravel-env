@@ -1,4 +1,5 @@
 /vendor
+composer.lock
 .env
 .env.backup
 .phpunit.result.cache
@@ -11,3 +12,4 @@ yarn-error.log
 /.idea
 /.vscode
 /data.ms
+/tests/reports
