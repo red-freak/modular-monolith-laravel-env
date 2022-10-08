@@ -9,6 +9,7 @@ The task of this package is to manage module dotnev-files used by the Laravel in
 To store these files in source control without populating its contents to tjhe public the package is also based on Laravels [environment encrypting](https://laravel.com/docs/9.x/configuration#encrypting-environment-files) by a shared secret. This way the package can also be used for [forge](https://forge.laravel.com/) or [envoyer](https://envoyer.io/) deployments.  
 
 * This package is inspired by the [Laracon Online Winter '22 talk](https://youtu.be/0Rq-yHAwYjQ?t=4129) by [Ryuta Hamasaki](https://github.com/avosalmon): "Modularising the Monolith" ([slides](https://speakerdeck.com/avosalmon/modularising-the-monolith-laracon-online-winter-2022) | [gitHub](https://github.com/avosalmon/modular-monolith-laravel)) and though of as an extension for such approaches.
+* 
 
 ## Systemrequirements
 * This package is only tested with `Laravel 9`. So it requires `"vlucas/phpdotenv": "^5.4.1"`.
@@ -16,13 +17,84 @@ To store these files in source control without populating its contents to tjhe p
 
 ## Installation
 
-* replace `use Illuminate\Foundation\Http\Kernel as HttpKernel;` with `use RedFreak\ModularEnv\Foundation\Http\Kernel as HttpKernel;` in `app/Http/Kernel.php`
-* replace `use Illuminate\Foundation\Console\Kernel as ConsoleKernel;` with `use RedFreak\ModularEnv\Foundation\Console\Kernel as ConsoleKernel;` in `app/Console/Kernel.php`
+To install you have to replace the Kernel-classes of Laravel.
+
+#### app/Http/Kernel.php
+
+```php
+// replace
+5: use Illuminate\Foundation\Http\Kernel as HttpKernel;
+```
+```php
+// with
+5: use RedFreak\ModularEnv\Foundation\Http\Kernel as HttpKernel;
+```
+
+#### app/Console/Kernel.php
+```php
+// replace
+6: use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+```
+```php
+// with
+6: use RedFreak\ModularEnv\Foundation\Console\Kernel as ConsoleKernel;
+```
 
 ## Testing
 
+run in develope
+```sh
+./vendor/bin/phpunit
+```
+
 ## How to use
 
+### getting started
+The package assumes that the including package is structured following the modular monolith talk with the additional dotenv-files by this logic:
+```bash
+.
+├── app
+├── .env
+├── ...
+├── src
+│    ├── ModuleOne
+│    │    ├── ...
+│    │    └── .env
+│    ├── ...
+│    └── ModuleLast
+│         ├── ...
+│         └── .env
+└── ...
+```
+If your structure is different you have to implement the `ModularEnvironmentApplication`-Contract into your application. By the method `ModularEnvironmentApplication::additionalEnvFiles()` the package will recognize different paths (* and ** are allowed and used like in the .gitignore).
+
+## tasks
+### tasks for 0.1.0 - hooking the Kernel
+- [ ] implementing logic to hook into the Kernels
+### tasks for 0.2.0 - reading the .env
+- [ ] implementing logic to load the additional dotenv-files
+### tasks for 0.3.0 - encrypting the files
+- [ ] support for `env:encrypt` and `env:decrypt` to handle the files
+- [ ] implementing `modular_env:encrypt` and `modular_env:deecrypt` to support deployment processes
+### 1.0.0-alpha
+- [ ] maybe writing additional tests
+- [ ] adding a test-pipeline for gitHub
+- [ ] fixing and testing of 0.3.0 in real-life-environments
+
+## recommendations
+
+#### use the following in your `.gitignore`
+```bash
+.env
+.env.*
+!.env.example
+!.env*.encrypted
+!.env.pipelines
+/src/**/.env
+/src/**/.env.*
+!/src/**/.env*.encrypted
+!/src/**/.env.example
+```
 ## Why do I?
 
 ### Why do I have to replace Kernel-Classes?
