@@ -8,6 +8,7 @@ use RedFreak\ModularEnv\Foundation\Bootstrap\LoadEnvironmentVariables as RedFrea
 use RedFreak\ModularEnv\Foundation\Concerns\ReplacesEnvironmentBootstrapper;
 use RedFreak\ModularEnv\Foundation\Http\Kernel as RedFreakKernel;
 use RedFreak\ModularEnv\Tests\TestCase;
+use ReflectionException;
 use ReflectionProperty;
 
 class KernelTest extends TestCase
@@ -45,5 +46,13 @@ class KernelTest extends TestCase
         $indexOfBootstrapper = array_search(RedFreakLoadEnvironmentVariables::class, $replacedBootstrappers);
         unset($defaultBootstrappers[$indexOfBootstrapper], $replacedBootstrappers[$indexOfBootstrapper]);
         $this->assertEquals($defaultBootstrappers, $replacedBootstrappers, 'During the replacement one ore more side effects occured.');
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function test_02_no_usage_of_facades(): void
+    {
+        $this->checkForFacadeInheritance(IlluminateKernel::class);
     }
 }
