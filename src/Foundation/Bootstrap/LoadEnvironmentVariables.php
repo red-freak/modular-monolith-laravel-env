@@ -25,7 +25,8 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
         return Dotenv::create(
             Env::getRepository(),
             $this->environmentPaths($app),
-            $app->environmentFile()
+            $app->environmentFile(),
+            false
         );
     }
 
