@@ -70,7 +70,8 @@ If your structure is different you have to implement the `ModularEnvironmentAppl
 
 ## tasks
 ### tasks for 0.2.0 - reading the .env
-- [ ] implementing logic to load the additional dotenv-files
+- [X] implementing logic to load the additional dotenv-files
+- [ ] prefixing by module
 ### tasks for 0.3.0 - encrypting the files
 - [ ] support for `env:encrypt` and `env:decrypt` to handle the files
 - [ ] implementing `modular_env:encrypt` and `modular_env:deecrypt` to support deployment processes
@@ -78,6 +79,10 @@ If your structure is different you have to implement the `ModularEnvironmentAppl
 - [ ] maybe writing additional tests
 - [ ] adding a test-pipeline for gitHub
 - [ ] fixing and testing of 0.3.0 in real-life-environments
+### 1.0.0 - MVP
+- [ ] fixed release of 1.0.0-alpha
+### 1.1.0 - LaravelRay
+- [ ] support for LaravelRay
 
 ## recommendations
 
