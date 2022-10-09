@@ -4,15 +4,17 @@ namespace RedFreak\ModularEnv\Foundation\Bootstrap;
 
 use Dotenv\Dotenv;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables as IlluminateLoadEnvironmentVariables;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RedFreak\ModularEnv\Contracts\ModularEnvironmentApplication as ModularEnvironmentApplicationContract;
 
 class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
 {
+    protected ?Filesystem $filesystem = null;
+
     /**
      * @inheritDoc
      * We add the pathes of the addional
@@ -25,6 +27,15 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
             $this->environmentPaths($app),
             $app->environmentFile()
         );
+    }
+
+    protected function filesystem(): Filesystem
+    {
+        if (!$this->filesystem) {
+            $this->filesystem = new Filesystem();
+        }
+
+        return $this->filesystem;
     }
 
     /**
@@ -43,7 +54,7 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
             // create a basePath from relative path if needed
             $path = $this->basePath($path, $app);
             // IF there is no "regex" THEN add the path
-            if (!Str::contains($path, '*') && File::isDirectory($path)) { // also matches **
+            if (!Str::contains($path, '*') && $this->filesystem()->isDirectory($path)) { // also matches **
                 $paths[] = $path;
                 continue;
             }
@@ -86,12 +97,13 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
 
         // construct the currentPath until here
         $currentPath .= implode(DIRECTORY_SEPARATOR, array_filter($currentPathSegments));
-        if (!File::isDirectory($currentPath)) return [];
+        if (!$this->filesystem()->isDirectory($currentPath)) return [];
+
         if (empty($pathSegmentToAnalyse)) return [$currentPath.DIRECTORY_SEPARATOR];
 
         if ($pathSegmentToAnalyse === '**') $pathSegmentToAnalyse = '*';
         // get the directories of the currentPath
-        $pathsFound = File::glob($currentPath.DIRECTORY_SEPARATOR.$pathSegmentToAnalyse);
+        $pathsFound = $this->filesystem()->glob($currentPath.DIRECTORY_SEPARATOR.$pathSegmentToAnalyse);
         // if there are no pathes, then we do not have to do more analysing
         if (!count($pathsFound)) {
             return [];
@@ -101,7 +113,7 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
         $pathsToReturn = [];
         foreach($pathsFound as $path) {
             // work with a copy of the collection
-           $pathsToReturn[] = $this->findPath($pathSegmentsToAnalyse->collect(), $path, ++$depth);
+            $pathsToReturn[] = $this->findPath($pathSegmentsToAnalyse->collect(), $path, ++$depth);
         }
 
         // flatten (prevented to use array_merge in loop before), filter, unique
