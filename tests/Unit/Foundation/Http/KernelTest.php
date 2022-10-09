@@ -4,6 +4,7 @@ namespace RedFreak\ModularEnv\Tests\Unit\Foundation\Http;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables as IlluminateLoadEnvironmentVariables;
 use Illuminate\Foundation\Http\Kernel as IlluminateKernel;
+use Illuminate\Support\Facades\Facade;
 use RedFreak\ModularEnv\Foundation\Bootstrap\LoadEnvironmentVariables as RedFreakLoadEnvironmentVariables;
 use RedFreak\ModularEnv\Foundation\Concerns\ReplacesEnvironmentBootstrapper;
 use RedFreak\ModularEnv\Foundation\Http\Kernel as RedFreakKernel;
@@ -53,6 +54,6 @@ class KernelTest extends TestCase
      */
     public function test_02_no_usage_of_facades(): void
     {
-        $this->checkForFacadeInheritance(IlluminateKernel::class);
+        $this->checkForFacadeInheritance(IlluminateKernel::class, [Facade::class]);
     }
 }

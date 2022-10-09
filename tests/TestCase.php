@@ -2,11 +2,20 @@
 
 namespace RedFreak\ModularEnv\Tests;
 
+use Exception;
+use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Facades\URL;
 use Orchestra\Testbench\TestCase as PackageTestCase;
+use RedFreak\ModularEnv\Contracts\ModularEnvironmentApplication;
 use RedFreak\ModularEnv\Foundation\Bootstrap\LoadEnvironmentVariables as RedFreakLoadEnvironmentVariables;
 use RedFreak\ModularEnv\ModularEnvServiceProvider;
 use ReflectionClass;
 use ReflectionException;
+use Storage;
 
 class TestCase extends PackageTestCase
 {
@@ -35,7 +44,7 @@ class TestCase extends PackageTestCase
      *
      * @throws ReflectionException
      */
-    protected function checkForFacadeInheritance(string $classToCheck): void
+    protected function checkForFacadeInheritance(string $classToCheck, array $allowedClasses = []): void
     {
         $useStatements = [];
 
@@ -50,8 +59,10 @@ class TestCase extends PackageTestCase
                 continue;
             }
             // if there is a T_USE-Token, we look at the FQN
-            if (token_name($tokens[$currentToken][0]) === 'T_USE') {
-                $this->checkClassForFacadeInheritance($tokens[$currentToken + 2][1], $tokens[$currentToken + 2][2]);
+            if ($currentToken + 2 < $tokenCount && is_array($tokens[$currentToken + 2]) && token_name($tokens[$currentToken][0]) === 'T_USE') {
+                if (!in_array($tokens[$currentToken + 2][1], $allowedClasses, true)) {
+                    $this->checkClassForFacadeInheritance($tokens[$currentToken + 2][1], $tokens[$currentToken + 2][2]);
+                }
 
                 // remember the use-statements
                 if (token_name(data_get($tokens, ($currentToken + 4) . '.0')) === 'T_AS') {
@@ -81,7 +92,9 @@ class TestCase extends PackageTestCase
                     continue;
                 }
 
-                $this->checkClassForFacadeInheritance($className, $tokens[$currentToken][2]);
+                if (! in_array($className, $allowedClasses, true)) {
+                    $this->checkClassForFacadeInheritance($className, $tokens[$currentToken][2]);
+                }
             }
 
             ++$currentToken;
@@ -93,7 +106,7 @@ class TestCase extends PackageTestCase
      * @param  int  $line
      *
      * @return void
-     * @throws ReflectionException
+     *
      */
     private function checkClassForFacadeInheritance(string $className, int $line): void
     {
@@ -103,13 +116,68 @@ class TestCase extends PackageTestCase
             'The use of Facades is not allowed in this context ('.$line.': '.$className.').'
         );
         // check also the parent classes
-        $reflectionOfUsedClass = new ReflectionClass($className);
-        while ($reflectionOfUsedClass = $reflectionOfUsedClass->getParentClass()) {
-            $this->assertDoesNotMatchRegularExpression(
-                '/\\\\Facade/',
-                $reflectionOfUsedClass->getName(),
-                'The use of Facades is not allowed in this context ('.$line.': '.$className.').'
-            );
+        try {
+            $reflectionOfUsedClass = new ReflectionClass($className);
+        } catch (ReflectionException $e) {
+            return;
         }
+
+        if ($reflectionOfUsedClass->isTrait()) {
+            return;
+        }
+        try {
+            while ($reflectionOfUsedClass = $reflectionOfUsedClass->getParentClass()) {
+                $this->assertDoesNotMatchRegularExpression(
+                    '/\\\\Facade/',
+                    $reflectionOfUsedClass->getName(),
+                    'The use of Facades is not allowed in this context ('.$line.': '.$className.').'
+                );
+            }
+        } catch(ReflectionException $e) {
+            // nil
+        }
+    }
+
+    protected function createAppWithContract(?string $basePath, array $additionalPaths = []): ApplicationContract {
+        return new class($basePath, $additionalPaths)  extends Application implements ModularEnvironmentApplication  {
+            public function __construct($basePath = null, private readonly array $additionalPaths = [])
+            {
+                parent::__construct($basePath);
+            }
+
+            public function additionalEnvFiles(): array
+            {
+                return $this->additionalPaths;
+            }
+        };
+    }
+
+    /**
+     * Replace the given disk with a local testing disk.
+     *
+     * @param  string|null  $disk
+     * @param  array  $config
+     *
+     * @return \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    protected function fakedFilesystem(?string $disk = null, array $config = []): \Illuminate\Contracts\Filesystem\Filesystem
+    {
+        $disk = $disk ?: Config::get('filesystems.default');
+
+        $root = storage_path('framework'.DIRECTORY_SEPARATOR.'testing'.DIRECTORY_SEPARATOR.'disks'.DIRECTORY_SEPARATOR.$disk);
+
+        if ($token = ParallelTesting::token()) {
+            $root = "{$root}_test_{$token}";
+        }
+
+        (new Filesystem)->cleanDirectory($root);
+
+        Storage::set($disk, $fake = Storage::createLocalDriver(array_merge($config, [
+            'root' => $root,
+        ])));
+
+        return tap($fake)->buildTemporaryUrlsUsing(function ($path, $expiration) {
+            return URL::to($path.'?expiration='.$expiration->getTimestamp());
+        });
     }
 }

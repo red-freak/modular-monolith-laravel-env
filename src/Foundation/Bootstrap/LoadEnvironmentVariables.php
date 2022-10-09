@@ -2,7 +2,6 @@
 
 namespace RedFreak\ModularEnv\Foundation\Bootstrap;
 
-use Dotenv\Dotenv;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables as IlluminateLoadEnvironmentVariables;
@@ -10,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
 use RedFreak\ModularEnv\Contracts\ModularEnvironmentApplication as ModularEnvironmentApplicationContract;
+use RedFreak\ModularEnv\Dotenv\Dotenv;
 
 class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
 {
@@ -26,7 +26,9 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
             Env::getRepository(),
             $this->environmentPaths($app),
             $app->environmentFile(),
-            false
+            false,
+            null,
+            $app->environmentPath()
         );
     }
 
