@@ -2,7 +2,7 @@
 > This Package is still work in progress!
 
 > **Warning**
-> currently this package is not functional! 
+> The package is basically functional, but there is no logic to handle the files in a repo.
 
 # Modular Monolith Laravel Env
 The task of this package is to manage module dotnev-files used by the Laravel integration of [phpdotenv](https://github.com/vlucas/phpdotenv).
@@ -68,9 +68,12 @@ The package assumes that the including package is structured following the modul
 ```
 If your structure is different you have to implement the `ModularEnvironmentApplication`-Contract into your application. By the method `ModularEnvironmentApplication::additionalEnvFiles()` the package will recognize different paths (* and ** are allowed and used like in the .gitignore).
 
+### using the variables
+Variables form the default `.env` are accessed like before with the `env()`-helper.
+
+Variables from the modules are accessed the same way with the difference that they are prefixed with the module name in SNAKE_CASE (caps) and `__`. E.g. the Variable `HELLO=WORLD` from the file `/src/FooBar/.env` can be accessed by `env('FOO_BAR__HELLO')`.
+
 ## tasks
-### tasks for 0.2.0 - reading the .env
-- [ ] implementing logic to load the additional dotenv-files
 ### tasks for 0.3.0 - encrypting the files
 - [ ] support for `env:encrypt` and `env:decrypt` to handle the files
 - [ ] implementing `modular_env:encrypt` and `modular_env:deecrypt` to support deployment processes
@@ -78,6 +81,10 @@ If your structure is different you have to implement the `ModularEnvironmentAppl
 - [ ] maybe writing additional tests
 - [ ] adding a test-pipeline for gitHub
 - [ ] fixing and testing of 0.3.0 in real-life-environments
+### 1.0.0 - MVP
+- [ ] fixed release of 1.0.0-alpha
+### 1.1.0 - LaravelRay
+- [ ] support for LaravelRay
 
 ## recommendations
 

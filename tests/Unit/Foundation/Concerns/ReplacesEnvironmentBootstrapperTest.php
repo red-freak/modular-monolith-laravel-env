@@ -8,6 +8,7 @@ use RedFreak\ModularEnv\Foundation\Bootstrap\LoadEnvironmentVariables as RedFrea
 use RedFreak\ModularEnv\Foundation\Concerns\ReplacesEnvironmentBootstrapper;
 use RedFreak\ModularEnv\Foundation\Http\Kernel as RedFreakKernel;
 use RedFreak\ModularEnv\Tests\TestCase;
+use ReflectionException;
 use ReflectionProperty;
 use stdClass;
 
@@ -37,5 +38,13 @@ class ReplacesEnvironmentBootstrapperTest extends TestCase
         $sourceArray = [IlluminateLoadEnvironmentVariables::class, RedFreakLoadEnvironmentVariables::class];
         $expectedArray = [RedFreakLoadEnvironmentVariables::class, RedFreakLoadEnvironmentVariables::class];
         $this->assertEquals($expectedArray, $this->replaceEnvironmentBootstrapper($sourceArray));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function test_02_no_usage_of_facades(): void
+    {
+        $this->checkForFacadeInheritance(ReplacesEnvironmentBootstrapper::class);
     }
 }
