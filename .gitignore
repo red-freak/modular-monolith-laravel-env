@@ -13,4 +13,3 @@ yarn-error.log
 /.vscode
 /data.ms
 /tests/reports
-/tests/storage
