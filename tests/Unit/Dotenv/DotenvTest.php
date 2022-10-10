@@ -14,8 +14,8 @@ class DotenvTest extends TestCase
 {
     public function test_01_create(): void
     {
-        $redFreakDotenv = RedFreakDotenv::create(Env::getRepository(), ['test/'], ['.env'],true, 'test', '.env');
-        $dotenvDotenv = DotenvDotenv::create(Env::getRepository(), ['test/'], ['.env'],true, 'test', '.env');
+        $redFreakDotenv = RedFreakDotenv::create(Env::getRepository(), ['test'.DIRECTORY_SEPARATOR], ['.env'],true, 'test', '.env');
+        $dotenvDotenv = DotenvDotenv::create(Env::getRepository(), ['test'.DIRECTORY_SEPARATOR], ['.env'],true, 'test', '.env');
         $dotenvReflection = new ReflectionClass(DotenvDotenv::class);
         $this->assertEquals('.env', RedFreakDotenv::laravelDefaultPath());
 
@@ -25,7 +25,7 @@ class DotenvTest extends TestCase
         $this->assertEquals(DotenvFileStore::class, $dotenvFileStore::class);
         $redFreakFileStoreReflection = new ReflectionClass(RedFreakFileStore::class);
         $dotenvFileStoreReflection = new ReflectionClass(DotenvFileStore::class);
-        $this->assertEquals(['test/\.env'], $redFreakFileStoreReflection->getProperty('filePaths')->getValue($redFreakFileStore));
+        $this->assertEquals(['test'.DIRECTORY_SEPARATOR.'.env'], $redFreakFileStoreReflection->getProperty('filePaths')->getValue($redFreakFileStore));
         $this->assertEquals($dotenvFileStoreReflection->getProperty('filePaths')->getValue($dotenvFileStore), $redFreakFileStoreReflection->getProperty('filePaths')->getValue($redFreakFileStore));
         $this->assertEquals(true, $redFreakFileStoreReflection->getProperty('shortCircuit')->getValue($redFreakFileStore));
         $this->assertEquals($dotenvFileStoreReflection->getProperty('shortCircuit')->getValue($dotenvFileStore), $redFreakFileStoreReflection->getProperty('shortCircuit')->getValue($redFreakFileStore));
