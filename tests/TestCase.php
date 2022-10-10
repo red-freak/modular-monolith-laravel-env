@@ -2,26 +2,27 @@
 
 namespace RedFreak\ModularEnv\Tests;
 
-use Exception;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\ParallelTesting;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Orchestra\Testbench\TestCase as PackageTestCase;
 use RedFreak\ModularEnv\Contracts\ModularEnvironmentApplication;
-use RedFreak\ModularEnv\Foundation\Bootstrap\LoadEnvironmentVariables as RedFreakLoadEnvironmentVariables;
 use RedFreak\ModularEnv\ModularEnvServiceProvider;
 use ReflectionClass;
 use ReflectionException;
-use Storage;
 
 class TestCase extends PackageTestCase
 {
     public function setUp(): void
     {
         parent::setUp();
+
+        // set the storage to something writeable
+        $this->app->useStoragePath(base_path('tests'.DIRECTORY_SEPARATOR.'storage'));
     }
 
     protected function getPackageProviders($app): array
@@ -164,7 +165,7 @@ class TestCase extends PackageTestCase
     {
         $disk = $disk ?: Config::get('filesystems.default');
 
-        $root = storage_path('framework'.DIRECTORY_SEPARATOR.'testing'.DIRECTORY_SEPARATOR.'disks'.DIRECTORY_SEPARATOR.$disk);
+        $root = storage_path('disks'.DIRECTORY_SEPARATOR.$disk);
 
         if ($token = ParallelTesting::token()) {
             $root = "{$root}_test_{$token}";

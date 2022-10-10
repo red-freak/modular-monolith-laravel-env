@@ -27,8 +27,7 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
             $this->environmentPaths($app),
             $app->environmentFile(),
             false,
-            null,
-            $app->environmentPath()
+            defaultPath: $app->environmentPath()
         );
     }
 
@@ -95,11 +94,17 @@ class LoadEnvironmentVariables extends IlluminateLoadEnvironmentVariables
      */
     private function findPath(Collection $pathSegmentsToAnalyse, string $currentPath = '', int $depth = 0): array
     {
+        // necessary for unix systems to prepend the first /
+        $prependSlash = false;
+        if ($depth == 0 && empty($pathSegmentsToAnalyse->first())) {
+            $prependSlash = true;
+            $pathSegmentsToAnalyse->shift();
+        }
         // handle all segements withour wildcards
         [$pathSegmentToAnalyse, $currentPathSegments] = $this->processPathSegmentsWithoutWildcard($pathSegmentsToAnalyse);
 
         // construct the currentPath until here
-        $currentPath .= implode(DIRECTORY_SEPARATOR, array_filter($currentPathSegments));
+        $currentPath .= ($prependSlash ? '/' : '') . implode(DIRECTORY_SEPARATOR, array_filter($currentPathSegments));
         if (!$this->filesystem()->isDirectory($currentPath)) return [];
 
         if (empty($pathSegmentToAnalyse)) return [$currentPath.DIRECTORY_SEPARATOR];
