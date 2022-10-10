@@ -22,7 +22,7 @@ class StoreBuilderTest extends TestCase
 
         // createWithNoNames
         $builder = StoreBuilder::createWithNoNames();
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = DotenvStoreBuilder::createWithNoNames();
         $this->assertEquals(DotenvStoreBuilder::class, $dotenvBuilder::class);
         $this->assertEquals([], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
@@ -35,7 +35,7 @@ class StoreBuilderTest extends TestCase
 
         // createWithDefaultName
         $builder = StoreBuilder::createWithDefaultName();
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = DotenvStoreBuilder::createWithDefaultName();
         $this->assertEquals(DotenvStoreBuilder::class, $dotenvBuilder::class);
         $this->assertEquals([], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
@@ -48,12 +48,12 @@ class StoreBuilderTest extends TestCase
 
         // addPath
         $builder = $builder->addPath('test');
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = $dotenvBuilder->addPath('test');
         $this->assertEquals(DotenvStoreBuilder::class, $dotenvBuilder::class);
         $this->assertEquals(['test'], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
         $builder = $builder->addPath('test2');
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = $dotenvBuilder->addPath('test2');
         $this->assertEquals(['test', 'test2'], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals(['.env'], $builderReflection->getProperty('names')->getValue($builder));
@@ -65,7 +65,7 @@ class StoreBuilderTest extends TestCase
 
         // addName
         $builder = $builder->addName('test');
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = $dotenvBuilder->addName('test');
         $this->assertEquals(['test', 'test2'], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals(['.env', 'test'], $builderReflection->getProperty('names')->getValue($builder));
@@ -77,7 +77,7 @@ class StoreBuilderTest extends TestCase
 
         // shortCircuit
         $builder = $builder->shortCircuit();
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = $dotenvBuilder->shortCircuit();
         $this->assertEquals(['test', 'test2'], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals(['.env', 'test'], $builderReflection->getProperty('names')->getValue($builder));
@@ -89,7 +89,7 @@ class StoreBuilderTest extends TestCase
 
         // fileEncoding
         $builder = $builder->fileEncoding('test');
-        $dotenvBuilder = $builderReflection->getProperty('storeBuilder')->getValue($builder);
+        $dotenvBuilder = $dotenvBuilder->fileEncoding('test');
         $this->assertEquals(['test', 'test2'], $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals($dotenvBuilderReflection->getProperty('paths')->getValue($dotenvBuilder), $builderReflection->getProperty('paths')->getValue($builder));
         $this->assertEquals(['.env', 'test'], $builderReflection->getProperty('names')->getValue($builder));

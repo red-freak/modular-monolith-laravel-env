@@ -16,14 +16,12 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
     /**
      * Create a new store builder instance.
      *
-     * @param  DotenvStoreBuilder  $storeBuilder
      * @param  string[]  $paths
      * @param  string[]  $names
      * @param  bool  $shortCircuit
      * @param  string|null  $fileEncoding
      */
     private function __construct(
-        private readonly DotenvStoreBuilder $storeBuilder,
         private readonly array $paths = [],
         private readonly array $names = [],
         private readonly bool $shortCircuit = false,
@@ -37,7 +35,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public static function createWithNoNames()
     {
-        return new self(DotenvStoreBuilder::createWithNoNames());
+        return new self();
     }
 
     /**
@@ -47,7 +45,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public static function createWithDefaultName()
     {
-        return new self(DotenvStoreBuilder::createWithDefaultName(), [], [self::DEFAULT_NAME]);
+        return new self([], [self::DEFAULT_NAME]);
     }
 
     /**
@@ -59,7 +57,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public function addPath(string $path)
     {
-        return new self($this->storeBuilder->addPath($path), \array_merge($this->paths, [$path]), $this->names, $this->shortCircuit, $this->fileEncoding);
+        return new self(\array_merge($this->paths, [$path]), $this->names, $this->shortCircuit, $this->fileEncoding);
     }
 
     /**
@@ -71,7 +69,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public function addName(string $name)
     {
-        return new self($this->storeBuilder->addName($name), $this->paths, \array_merge($this->names, [$name]), $this->shortCircuit, $this->fileEncoding);
+        return new self($this->paths, \array_merge($this->names, [$name]), $this->shortCircuit, $this->fileEncoding);
     }
 
     /**
@@ -81,7 +79,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public function shortCircuit()
     {
-        return new self($this->storeBuilder->shortCircuit(), $this->paths, $this->names, true, $this->fileEncoding);
+        return new self($this->paths, $this->names, true, $this->fileEncoding);
     }
 
     /**
@@ -93,7 +91,7 @@ class StoreBuilder // extends Dotenv\Store\StoreBuilder indirectly
      */
     public function fileEncoding(string $fileEncoding = null)
     {
-        return new self($this->storeBuilder->fileEncoding($fileEncoding), $this->paths, $this->names, $this->shortCircuit, $fileEncoding);
+        return new self($this->paths, $this->names, $this->shortCircuit, $fileEncoding);
     }
 
     /**
